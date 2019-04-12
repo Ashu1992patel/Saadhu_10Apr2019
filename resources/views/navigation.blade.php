@@ -27,14 +27,24 @@
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
       <ul class="nav navbar-nav">
-        {{-- <li class="active"><a href="{{ url('index') }}">Home <span class="sr-only">(current)</span></a></li> --}}
-        <li class="active"><a href="{{ url('donation') }}">Donate</a></li>
+        <li class="active">
+            <a href="{{ url('donation') }}">Donate</a>
+        </li>
 
-        {{-- <li class="active"><a href="{{ url('donor') }}">Donor List</a></li> --}}
       @if(session('admin')->role != 'user')
-          <li class="active"><a href="{{ url('donors') }}">Donor List</a></li>
+          <li class="active">
+              <a href="{{ url('donors') }}">Donor List</a>
+          </li>
+          <li class="active">
+              <a href="{{ url('donors') }}">Report</a>
+          </li>
+          <li class="active">
+              <a href="{{ url('donors') }}">Pending</a>
+          </li>
       @endif
-        
+          <li class="active">
+              <a href="{{ url('payment') }}">Payment</a>
+          </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
