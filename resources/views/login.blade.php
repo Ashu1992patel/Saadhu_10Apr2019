@@ -74,7 +74,12 @@
 		@csrf
         <h2 class="text-center">Login</h2>
         <div class="form-group has-error">
-        	<input type="text" class="form-control" name="username" id="username" placeholder="Username / Mobile Number" required="required">
+        	<input type="text" class="form-control"
+                   name="username"
+                   id="username"
+                   autofocus = "autofocus"
+                   placeholder="Username / Mobile Number"
+                   required="required">
         </div>
 		<div class="form-group" id="pwd">
             <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password">

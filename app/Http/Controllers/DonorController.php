@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\DonorM;
+use App\DonorModel;
+use App\PlanModel;
 use App\ZipDetail;
 use App\LoginModel;
 use Illuminate\Http\Request;
@@ -31,22 +32,31 @@ class DonorController extends Controller
             $collection = collect($zipd);
             $state1 = $collection->unique('state_name');
             $state = $state1->values()->all();
-            return view('donation')->with(['state'=>$state, 'admin'=>session('admin')]);
+            $plan = PlanModel::where(['is_active'=>1])->get();
+            return view('donation')->with(['state'=>$state, 'admin'=>session('admin'), 'plan'=>$plan]);
         }
         else
         {
             return view('login');
         }
     }
-        
+    public function dashboard(Request $request)
+    {
+            $zipd = ZipDetail::distinct()->get();
+            $collection = collect($zipd);
+            $state1 = $collection->unique('state_name');
+            $state = $state1->values()->all();
+            $plan = PlanModel::where(['is_active'=>1])->get();
+            return view('dashboard')->with(['state'=>$state, 'plan'=>$plan]);
+    }
     public function donor()
     {             
         $zipd = ZipDetail::distinct()->get();
-
+        $plan = PlanModel::where(['is_active'=>1])->get();
         $collection = collect($zipd);
         $state1 = $collection->unique('state_name');
         $state = $state1->values()->all();             
-        return view('donation')->with(['state'=>$state]);
+        return view('donation')->with(['state'=>$state, 'plan'=>$plan]);
     }
 
     public function receipt()
@@ -55,11 +65,12 @@ class DonorController extends Controller
     }
     public function donation()
     {
-        return view('donation');
+        $plan = PlanModel::where(['is_active'=>1])->get();
+        return view('donation')->with(['plan'=>$plan]);
     }
     public function donate()
     {
-        $data = new DonorM;
+        $data = new DonorModel;
         $donorLogin = new UserLoginModel;
         $data->name = request('name');
         $data->contact = request('contact');
@@ -71,6 +82,7 @@ class DonorController extends Controller
         $data->save();
 
         $donorLogin->contact = request('contact');
+        $donorLogin->otp = '123';
 
         $name  = urlencode("$data->name");
         $msg  = "जय%20जिनेंद्र%20$name,%20आपकी%20सहयोग%20राशि%20₹%20$data->amount%20के%20लिये%20धन्यवाद।";
@@ -80,7 +92,7 @@ class DonorController extends Controller
         file_get_contents("http://login.heightsconsultancy.com/API/WebSMS/Http/v1.0a/index.php?username=vidhyas&password=password&sender=VIDHYA&to=$data->contact&message=$msg&reqid=1&format={json|text}&route_id=113&msgtype=unicode");
                 
         // return $data;
-        $dt = DonorM::find($data->id);
+        $dt = DonorModel::find($data->id);
         return view('currentReceipt')->with(['data'=>$dt]);
     }
 
@@ -116,13 +128,13 @@ class DonorController extends Controller
 
     public function list1()
     {
-        $data = DonorM::orderBy('id', 'desc')->paginate(10);
+        $data = DonorModel::orderBy('id', 'desc')->paginate(10);
         return view('list')->with(['data' => $data]);
 
     }
     public function donation_receipt($id)
     {
-        $data = DonorM::where('id', $id)->get();        
+        $data = DonorModel::where('id', $id)->get();
         return view('donation_receipt')->with(['data' => $data]);        
     }
 

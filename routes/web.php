@@ -12,12 +12,15 @@
 */
 Route::get('/', function () {
     return view('login');
+//    return view('master.master');
 });
 
 Route::get('login', 'DonorController@login');
 Route::get('logout', 'DonorController@logout');
 
 Route::post('dashboard', 'DonorController@logincheck');
+
+Route::any('home', 'DonorController@dashboard');
 
 
 Route::group(['middleware' => 'usersession'], function ()
@@ -27,4 +30,7 @@ Route::group(['middleware' => 'usersession'], function ()
     Route::any('print/{id}', 'DonorController@donation_receipt');
     Route::any('selectCity', 'DonorController@selectCity');
     Route::any('donation', 'DonorController@donor');
+
+    //----------------------- Payment -----------------------
+    Route::any('payment', 'PaymentController@payment');
 });
